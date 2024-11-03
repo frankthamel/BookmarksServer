@@ -15,7 +15,7 @@
 
 - Swift 5.5+
 - Vapor 4
-- PostgreSQL
+- Docker
 
 ## Installation
 
@@ -23,11 +23,22 @@
 
 ```bash
 git clone https://github.com/frankthamel/BookmarksServer.git
-cd BookmarksServer
 ```
 
-2. **Run the Server**
+2. **Start the DB**
+
+- Open a new terminal tab.
+- cd BookmarksServer
 
 ```bash
-vapor serve
+docker compose up db
+```
+
+3. **Run the Server**
+
+- Open a new terminal tab.
+- cd BookmarksServer
+
+```bash
+vapor run
 ```
