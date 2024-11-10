@@ -21,16 +21,18 @@ struct BookmarksController: RouteCollection {
     }
     
     @Sendable
-    func index(req: Request) async throws -> [BookmarkDTO] {
-        let data = try await Bookmark.query(on: req.db)
-            .with(\.$project)
+    func index(req: Request) async throws -> Page<BookmarkDTO> {
+        let pageRequest = try req.query.decode(PageRequest.self)
+        let bookmarks = try await Bookmark.query(on: req.db)
             .with(\.$tags)
+            .with(\.$project)
             .with(\.$notes)
             .with(\.$status)
             .with(\.$priority)
             .with(\.$bookmarkType)
-            .all()
-        return data.map { $0.toDTO() }
+            .paginate(pageRequest)
+        
+        return bookmarks.map { $0.toDTO() }
     }
     
     @Sendable

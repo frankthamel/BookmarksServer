@@ -19,8 +19,12 @@ struct TagsController: RouteCollection {
     }
 
     @Sendable
-    func index(req: Request) async throws -> [TagDTO] {
-        try await Tag.query(on: req.db).all().map { $0.toDTO() }
+    func index(req: Request) async throws -> Page<TagDTO> {
+        let pageRequest = try req.query.decode(PageRequest.self)
+        let tags = try await Tag.query(on: req.db)
+            .paginate(pageRequest)
+        
+        return tags.map { $0.toDTO() }
     }
 
     @Sendable

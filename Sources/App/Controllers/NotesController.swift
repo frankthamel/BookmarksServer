@@ -19,8 +19,12 @@ struct NotesController: RouteCollection {
     }
 
     @Sendable
-    func index(req: Request) async throws -> [NoteDTO] {
-        try await Note.query(on: req.db).all().map { $0.toDTO() }
+    func index(req: Request) async throws -> Page<NoteDTO> {
+        let pageRequest = try req.query.decode(PageRequest.self)
+        let notes = try await Note.query(on: req.db)
+            .paginate(pageRequest)
+        
+        return notes.map { $0.toDTO() }
     }
 
     @Sendable

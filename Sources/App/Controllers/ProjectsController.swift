@@ -19,8 +19,12 @@ struct ProjectsController: RouteCollection {
     }
 
     @Sendable
-    func index(req: Request) async throws -> [ProjectDTO] {
-        try await Project.query(on: req.db).all().map { $0.toDTO() }
+    func index(req: Request) async throws -> Page<ProjectDTO> {
+        let pageRequest = try req.query.decode(PageRequest.self)
+        let projects = try await Project.query(on: req.db)
+            .paginate(pageRequest)
+        
+        return projects.map { $0.toDTO() }
     }
 
     @Sendable
