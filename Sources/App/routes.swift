@@ -10,12 +10,11 @@ func routes(_ app: Application) throws {
         "Hello, world!"
     }
 
-    try app.register(collection: TodoController())
     try app.register(collection: BookmarksController())
-//    try app.register(collection: ProjectsController())
-//    try app.register(collection: TagsController())
-//    try app.register(collection: NotesController())
-//    try app.register(collection: PrioritiesController())
-//    try app.register(collection: StatusesController())
-//    try app.register(collection: BookmarkTypesController())
+    try app.register(collection: ProjectsController())
+    try app.register(collection: TagsController())
+    try app.register(collection: NotesController())
+    try app.register(collection: PrioritiesController())
+    try app.register(collection: StatusesController())
+    try app.register(collection: BookmarkTypesController())
 }

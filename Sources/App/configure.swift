@@ -17,7 +17,7 @@ public func configure(_ app: Application) async throws {
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
-    app.migrations.add(CreateTodo())
+    // V1
     app.migrations.add(ProjectMigrations.v1())
     app.migrations.add(StatusMigrations.v1())
     app.migrations.add(PriorityMigrations.v1())
@@ -27,6 +27,7 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(TagMigrations.v1())
     app.migrations.add(BookmarkTagPivotMigrations.v1())
     
+    // V2
     app.migrations.add(BookmarkTagPivotMigrations.v2())
     
     try await app.autoMigrate()
