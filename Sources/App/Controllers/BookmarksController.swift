@@ -104,7 +104,7 @@ struct BookmarksController: RouteCollection {
         let updatedBookmark = try req.content.decode(BookmarkDTO.self)
         bookmark.title = updatedBookmark.title
         bookmark.link = updatedBookmark.link
-        // Update other fields as needed
+//        bookmark.notes = updatedBookmark.notes?.map { $0.toModel() } ?? []
         
         try await bookmark.save(on: req.db)
         return UpdateResponseDTO(id: bookmark.id!)

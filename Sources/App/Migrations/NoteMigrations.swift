@@ -1,7 +1,7 @@
 import Fluent
 
 enum NoteMigrations {
-    struct v2: AsyncMigration {
+    struct v1: AsyncMigration {
         func prepare(on database: Database) async throws {
             try await database.schema("notes")
                 .id()

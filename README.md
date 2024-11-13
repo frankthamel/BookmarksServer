@@ -4,12 +4,20 @@
 
 ## Features
 
-- **Fetch all bookmarks**: Retrieve a list of all stored bookmarks.
+- **Fetch all bookmarks**: Retrieve a paginated list of all stored bookmarks.
 - **Fetch a single bookmark**: Retrieve details for a specific bookmark.
 - **Create a new bookmark**: Add a new bookmark to the collection.
 - **Update a bookmark**: Modify an existing bookmark.
 - **Delete a bookmark**: Remove a bookmark from the collection.
 - **Favorite a bookmark**: Mark a bookmark as a favorite.
+- **Bulk operations**: Perform create, update, and delete operations on multiple bookmarks at once.
+- **Manage tags**: Create, read, update, and delete tags associated with bookmarks.
+- **Manage bookmark types**: Create, read, update, and delete bookmark types.
+- **Manage projects**: Create, read, update, and delete projects associated with bookmarks.
+- **Manage priorities**: Create, read, update, and delete priorities for bookmarks.
+- **Manage notes**: Create, read, update, and delete notes attached to bookmarks.
+- **Manage statuses**: Create, read, update, and delete statuses for bookmarks.
+- **Pagination**: All list endpoints support pagination for efficient data retrieval.
 
 ## Requirements
 

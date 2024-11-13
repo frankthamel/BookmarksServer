@@ -23,12 +23,11 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(PriorityMigrations.v1())
     app.migrations.add(TypeMigrations.v1())
     app.migrations.add(BookmarkMigrations.v1())
-    app.migrations.add(NoteMigrations.v2())
+    app.migrations.add(NoteMigrations.v1())
     app.migrations.add(TagMigrations.v1())
     app.migrations.add(BookmarkTagPivotMigrations.v1())
     
-    // V2
-    app.migrations.add(BookmarkTagPivotMigrations.v2())
+    app.migrations.add(Seed())
     
     try await app.autoMigrate()
     
