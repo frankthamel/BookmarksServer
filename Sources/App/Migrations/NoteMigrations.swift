@@ -8,7 +8,7 @@ enum NoteMigrations {
                 .field(FieldKeys.Note.v1.text, .string, .required)
                 .field(FieldKeys.Note.v1.highlightColor, .string)
                 .field(FieldKeys.Note.v1.bookmarkId, .uuid)
-                .foreignKey(FieldKeys.Note.v1.bookmarkId, references: "bookmarks", "id", onDelete: .cascade)
+                .foreignKey(FieldKeys.Note.v1.bookmarkId, references: "bookmarks", "id", onDelete: .cascade, onUpdate: .cascade)
                 .field(FieldKeys.Note.v1.createdAt, .datetime)
                 .field(FieldKeys.Note.v1.updatedAt, .datetime)
                 .create()

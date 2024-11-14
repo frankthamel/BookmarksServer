@@ -30,6 +30,7 @@ struct BookmarksController: RouteCollection {
             .with(\.$status)
             .with(\.$priority)
             .with(\.$bookmarkType)
+            .sort(\.$updatedAt, .descending)
             .paginate(pageRequest)
         
         return bookmarks.map { $0.toDTO() }
@@ -64,20 +65,9 @@ struct BookmarksController: RouteCollection {
     func create(req: Request) async throws -> BookmarkDTO {
         let bookmarkDTO = try req.content.decode(BookmarkDTO.self)
         let bookmark = bookmarkDTO.toModel()
-        try await bookmark.create(on: req.db)
-        
-        if let noteDTOs = bookmarkDTO.notes {
-            var noteModels: [Note] = []
-            
-            for noteDTO in noteDTOs {
-                var mutableNoteDTO = noteDTO
-                mutableNoteDTO.bookmarkId = bookmark.id ?? UUID()
-                noteModels.append(mutableNoteDTO.toModel())
-            }
-            
-            try await noteModels.create(on: req.db)
-        }
-        
+        try await bookmark.save(on: req.db)
+        try await bookmark.$notes.create(bookmarkDTO.notes?.map { $0.toModel() } ?? [], on: req.db)
+                
         // Fetch the newly created bookmark with its relationships
         guard let createdBookmark = try await Bookmark.query(on: req.db)
             .filter(\.$id == bookmark.id!)
@@ -101,12 +91,28 @@ struct BookmarksController: RouteCollection {
             throw Abort(.notFound)
         }
         
-        let updatedBookmark = try req.content.decode(BookmarkDTO.self)
-        bookmark.title = updatedBookmark.title
-        bookmark.link = updatedBookmark.link
-//        bookmark.notes = updatedBookmark.notes?.map { $0.toModel() } ?? []
-        
-        try await bookmark.save(on: req.db)
+        try await req.db.transaction { db in
+            let updatedBookmark = try req.content.decode(BookmarkDTO.self)
+            bookmark.title = updatedBookmark.title
+            bookmark.link = updatedBookmark.link
+            
+            if let noteDTOs = updatedBookmark.notes {
+                for noteDTO in noteDTOs {
+                    var mutableNoteDTO = noteDTO
+                    mutableNoteDTO.bookmarkId = bookmark.id ?? UUID()
+                    if mutableNoteDTO.id == nil {
+                        try await mutableNoteDTO.toModel().save(on: db)
+                    } else {
+                        let note = try await Note.find(noteDTO.id, on: db)
+                        note?.text = noteDTO.text
+                        try await note?.save(on: db)
+                    }
+                }
+            }
+            
+            try await bookmark.save(on: db)
+        }
+
         return UpdateResponseDTO(id: bookmark.id!)
     }
     
